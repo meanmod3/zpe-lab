@@ -11,7 +11,7 @@ source + opposed low-leakage diodes + storage caps; expected result is transient
 that SATURATES (zero net current at matched-temperature equilibrium). Q2.3 deliberately
 injects a thermal gradient our instrumentation must catch. No graphene required.
 
-## A. Q2 circuit components (the <$200 core)
+## A. Q2 circuit components (verified $245-385)
 
 | # | Item | Spec / candidate parts | Qty | Est. | Source | Q2 role |
 |---|---|---|---|---|---|---|
