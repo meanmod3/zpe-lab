@@ -20,6 +20,11 @@ Zero spend authorized under intent 513 — this document is for quotes only.
 3. **No-cavity control:** bare MIM (Ni/NiOx+AlOx/Pd), no spacer, no mirror.
 4. **Ni-top-electrode variant:** as (1) with Ni replacing Pd top electrode — the hydride-free
    chemistry control from the promoted 511 budget row 5 (our addition; not in the papers).
+4b. **Pt-top-electrode variant (added by intent 518):** as (1) with Pt replacing Pd, matched in
+   the SAME fab run — the 518 data-existence review confirmed the Pd–H pathway is absent from
+   Moddel's own artifact checklist (Al₂O₃/Pd = the standard H₂ sensor configuration); Pd-vs-Pt
+   matched pairs are the most accessible hydride falsification test. Handling note for the
+   measurement phase: H₂-free (glovebox/inert) storage and measurement environment recommended.
 5. **Dummy-junction dies:** same pad geometry, insulator thick enough to be non-tunneling
    (≥10 nm AlOx) — the modulated-dummy control for budget rows 2b/3.
 
@@ -35,6 +40,14 @@ stage is rig-side (BOM item 5).
 - Room-temp 4-point resistance sampling: expected junction band 120 Ω–6.1 kΩ at the
   625–10,000 µm² areas (per PRR-SM reference-device band); dies far outside band flagged.
 - Target quote: full mask set + 1–2 wafers, $1.5–3k (511 envelope line 1).
+
+## Supplementary fabrication references (added by intent 518)
+Patents US11133758B2 / US11563388B2 / US12166434B2 (Moddel, Univ. of Colorado) carry MORE
+fabrication detail than the journal papers (VASE tables, Fowler-Nordheim 0.06–0.08 eV effective
+barriers, process variations across >1,000 devices / 21 batches) — hand these to the vendor
+alongside this spec. Also flagged by 518 for the build intent's PT: sputter-deposition
+stress / piezoelectric offsets in NiOx as a candidate thickness-dependent artifact (discuss
+stress control / anneal options with the vendor).
 
 ## Known risks to discuss with vendor
 - Native NiOx thickness is process-history-dependent (papers: 0.6–1 nm GSM vs 2.3 nm
