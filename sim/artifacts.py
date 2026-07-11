@@ -31,17 +31,16 @@ def ground_loop_current(v_gnd_V: float, r_j_ohm: float) -> float:
     measurement loop, driven through R_j (worst case: appears at the input)."""
     return v_gnd_V / r_j_ohm
 
-def stored_charge_budget_C() -> float:
-    """Row 5: stored charge/chemistry budget (coulombs), NOT a current.
-    Double-layer + Pd-H electrochemical budget for mm^2-scale thin-film
-    devices, upper bound. [assumption: 1 mC, deliberately generous — the
-    exclusion rule requires integrated signal charge > 10x this]"""
-    return 1e-3
-
 def calibration_drift_fraction() -> float:
     """Row 6: calibration. Traceable-reference drift bound between pre/post
     checks. [assumption: 1e-2 fractional per run, spec-sheet class]"""
     return 1e-2
+
+def calibration_drift_current(i_signal_A: float) -> float:
+    """Row 6 as a CURRENT-EQUIVALENT (PT-513 correction #7): drift is
+    multiplicative on the measured signal, so its current-equivalent is the
+    drift fraction times the claimed signal magnitude."""
+    return calibration_drift_fraction() * i_signal_A
 
 def hidden_input_resolution_W() -> float:
     """Row 7: hidden external energy. Power-audit metering floor.

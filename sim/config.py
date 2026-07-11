@@ -75,7 +75,23 @@ V_GND_NO_REVERSAL_V = 1e-6
 # [assumption: room-temperature rig, matches papers' 21.6-23.4 C]
 TEMP_K = 296.0
 
-# [extracted: SYM 3.2.1 — papers demonstrate only a 4-hour stability window;
-#  our stored-charge exclusion (511 row 5) needs integrated charge > 10 mC]
+# [extracted: SYM 3.2.1 — papers demonstrate only a 4-hour stability window]
 PAPER_STABILITY_WINDOW_S = 4 * 3600.0
-STORED_CHARGE_EXCLUSION_C = 10e-3
+
+# [assumption: 1 mC upper bound on stored electrochemical charge (double-layer
+#  + Pd-H) for mm^2-scale thin-film devices — 511 budget row 5's estimate,
+#  deliberately generous; NOT extracted from the papers]
+STORED_CHARGE_BUDGET_C = 1e-3
+# [assumption: 511 row-5 design rule — integrated signal charge must exceed
+#  10x the stored-charge budget; DERIVED, not extracted (PT-513 correction #1)]
+STORED_CHARGE_EXCLUSION_C = 10 * STORED_CHARGE_BUDGET_C
+
+# [assumption: ground-EMF sensitivity cases for the verdict table (PT-513
+#  correction #2): mitigated rig target 0.1 uV; the papers' own stated
+#  instrument precision 1 uV [extracted: PRR-SM D1]; the papers' own
+#  persistent unexplained cavity-device anomaly ~6 uV [extracted: PRR-SM]]
+V_GND_SENSITIVITY_CASES_V = {
+    "rig target (0.1 uV, assumed mitigation)": 0.1e-6,
+    "papers' instrument precision (1 uV)": 1e-6,
+    "papers' persistent 6 uV anomaly": 6e-6,
+}

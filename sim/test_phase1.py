@@ -3,10 +3,11 @@
 import math
 import pytest
 
-from transport import simmons_conductance_per_cm2, junction_resistance_ohm, responsivity_V_inv
+import config as cfg
+from transport import simmons_conductance_per_cm2, junction_resistance_ohm, responsivity_bound_V_inv
 from artifacts import (
     thermo_emf_current, microphonic_current, emi_rectified_current,
-    ground_loop_current, stored_charge_budget_C, calibration_drift_fraction,
+    ground_loop_current, calibration_drift_fraction, calibration_drift_current,
     hidden_input_resolution_W, johnson_noise_current,
     integration_time_for_3sigma, rss,
 )
@@ -56,10 +57,29 @@ def test_emi_rectified_square_law():
 def test_ground_loop_ohms_law():
     assert ground_loop_current(1e-6, 1e6) == pytest.approx(1e-12)
 
-def test_static_budget_rows_present():
-    assert stored_charge_budget_C() > 0
-    assert 0 < calibration_drift_fraction() < 1
-    assert hidden_input_resolution_W() > 0
+def test_row5_exclusion_is_10x_budget():
+    # PT-513 correction #6: the design rule is DERIVED, not duplicated
+    assert cfg.STORED_CHARGE_EXCLUSION_C == pytest.approx(10 * cfg.STORED_CHARGE_BUDGET_C)
+    assert cfg.STORED_CHARGE_BUDGET_C == pytest.approx(1e-3)
+
+def test_row6_known_values():
+    assert calibration_drift_fraction() == pytest.approx(1e-2)
+    # PT-513 correction #7: current-equivalent = 1% of a 50 nA signal = 0.5 nA
+    assert calibration_drift_current(50e-9) == pytest.approx(0.5e-9)
+
+def test_row7_known_value():
+    assert hidden_input_resolution_W() == pytest.approx(1e-6)
+    # the pre-registered L3 caveat: audit floor sits ABOVE claimed device power
+    assert hidden_input_resolution_W() > cfg.P_CLAIMED_MAX_W
+
+def test_responsivity_is_flat_bound():
+    assert responsivity_bound_V_inv() == pytest.approx(10.0)
+
+def test_gsm_and_photolitho_claims_are_distinct_constants():
+    # PT-513 correction #5 guard: both exist; model must route by label
+    from phase1_model import claimed_signal_for
+    assert claimed_signal_for("GSM-33nm-cavity (G=1 mS)") == cfg.I_CLAIMED_GSM_A
+    assert claimed_signal_for("photolitho-low-R (ref set floor)") == cfg.I_CLAIMED_PHOTOLITHO_A
 
 def test_johnson_noise_magnitude():
     # 1 Mohm at 300 K, 1 Hz: sqrt(4kT/R) ~ 129 fA/rtHz

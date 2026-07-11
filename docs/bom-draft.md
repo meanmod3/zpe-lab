@@ -20,6 +20,9 @@ for operator review. Totals are compared against the 511 cost envelope ($3.3–7
 | 13 | Cabling: triax/guarded + rigid mounting hardware | rows 2b, 4 | $150–300 | microphonics mitigation is mechanical |
 | 14 | Data logger / DAQ (all channels, one timebase) | protocol | $150–300 | |
 
-**Total (target): $4,280–9,900. Used-market + favorable fab quote: ~$3.4–5k.**
-Consistent with the 511 envelope; items 2–3 dominate variance. Nothing is purchased under
-intent 513 — this BOM is the operator-approval package for a future build intent.
+**Total (target): $4,280–9,900 list. Used-market + favorable fab quote: ~$3.4–5k.**
+**Envelope honesty (PT-513 correction #7): only the used-market path fits the promoted 511
+envelope ($3.3–7.5k); the list-price ceiling EXCEEDS it by 32%.** Per 511's own rule
+("Phase-1 learnings feed a REVISION note"), this is flagged to the operator as an explicit
+envelope-revision decision, not glossed. Items 2–3 dominate variance. Nothing is purchased
+under intent 513 — this BOM is the operator-approval package for a future build intent.

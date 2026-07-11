@@ -26,13 +26,14 @@ def junction_resistance_ohm(phi_eV: float, s_angstrom: float, area_cm2: float) -
         return float("inf")
     return 1.0 / g
 
-def responsivity_V_inv(phi_eV: float, s_angstrom: float) -> float:
-    """Even-order nonlinearity parameter beta ~ I''/(2 I') in V^-1.
+def responsivity_bound_V_inv() -> float:
+    """Even-order nonlinearity parameter beta ~ I''/(2 I') in V^-1 — a FLAT
+    engineering upper bound, deliberately NOT operating-point-derived
+    (PT-513 correction #4: former signature took decorative phi/s params).
 
-    For MIM diodes the small-signal square-law responsivity is typically
-    1-10 V^-1 (barrier-asymmetry dependent). We use a conservative UPPER
-    bound for artifact budgeting (overestimating EMI rectification is the
-    safe direction). [assumption: beta_max = 10 V^-1, engineering upper
-    bound for asymmetric MIM diodes; see rectenna literature]
+    MIM small-signal square-law responsivity is typically 1-10 V^-1
+    (barrier-asymmetry dependent); overestimating EMI rectification is the
+    safe direction for artifact budgeting. [assumption: beta_max = 10 V^-1,
+    engineering upper bound for asymmetric MIM diodes; rectenna literature]
     """
     return 10.0

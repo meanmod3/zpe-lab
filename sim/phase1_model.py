@@ -1,5 +1,6 @@
-"""Phase-1 model runner (intent 513): computes the full artifact budget at each
-junction impedance point and emits docs/phase1-sim-results.md with the GO/NO-GO
+"""Phase-1 model runner (intent 513, revised per PT-513 corrections): computes
+the full artifact budget at each junction impedance point, a ground-EMF
+sensitivity analysis, and emits docs/phase1-sim-results.md with the GO/NO-GO
 detectability verdict. Run: python phase1_model.py (from sim/)."""
 
 import io
@@ -7,10 +8,10 @@ import math
 import os
 
 import config as cfg
-from transport import simmons_conductance_per_cm2, responsivity_V_inv
+from transport import simmons_conductance_per_cm2, responsivity_bound_V_inv
 from artifacts import (
     thermo_emf_current, microphonic_current, emi_rectified_current,
-    ground_loop_current, stored_charge_budget_C, calibration_drift_fraction,
+    ground_loop_current, calibration_drift_current,
     hidden_input_resolution_W, johnson_noise_current,
     integration_time_for_3sigma, rss,
 )
@@ -18,7 +19,6 @@ from verdict import VerdictInput, decide
 
 
 def eng(x, unit=""):
-    """Engineering notation for readability."""
     if x == 0 or math.isinf(x):
         return f"{x} {unit}"
     exp3 = int(math.floor(math.log10(abs(x)) / 3) * 3)
@@ -28,58 +28,82 @@ def eng(x, unit=""):
     return f"{x / 10**exp3:.3g} {prefix}{unit}"
 
 
+def claimed_signal_for(label):
+    """PT-513 correction #5: the GSM point uses the GSM figure-read value."""
+    if label.startswith("GSM"):
+        return cfg.I_CLAIMED_GSM_A
+    return cfg.I_CLAIMED_PHOTOLITHO_A
+
+
 def simmons_sanity():
-    """Check the Simmons model is CONSISTENT with the papers' extracted
-    barrier/thickness/impedance envelope (order-of-magnitude), rather than
-    tuning anything to fit."""
     rows = []
     for phi in cfg.BARRIER_EV_RANGE:
         for s_nm in cfg.INSULATOR_NM_RANGE:
             g_cm2 = simmons_conductance_per_cm2(phi, s_nm * 10.0)
-            # photolitho 10,000 um^2 = 1e-4 cm^2
             r_10000um2 = 1.0 / (g_cm2 * 1e-4)
             rows.append((phi, s_nm, g_cm2, r_10000um2))
     return rows
 
 
-def budget_at(label, r_j):
-    g_j = 1.0 / r_j
-    i_claim = cfg.I_CLAIMED_PHOTOLITHO_A
+def current_rss_floor(r_j, i_claim, v_gnd):
+    """RSS of the CURRENT-DOMAIN budget rows: 1 (thermo), 2 (microphonics,
+    mitigated), 3 (EMI), 4 (ground at the given residual EMF), 6 (calibration
+    drift current-equivalent).
 
+    SCOPE RECONCILIATION vs 511 (PT-513 correction #3): 511 pre-registered
+    "3x the RSS of budget terms 1-7". Rows 5 (charge, coulombs) and 7 (power
+    audit, watts) are not current-domain quantities and CANNOT enter a current
+    RSS; they are gated separately (row 5: integrated-charge exclusion; row 7:
+    power-audit bound, see L3 caveat). This narrowing is deliberate, explicit,
+    and pre-registered HERE so the physical phase inherits an unambiguous
+    criterion: 3x RSS(rows 1,2,3,4,6 as currents) AND row-5 charge gate AND
+    row-7 audit gate.
+    """
     i_thermo = thermo_emf_current(cfg.SEEBECK_V_PER_K, cfg.DELTA_T_K, r_j)
-    i_micro_amb = microphonic_current(cfg.V_OFFSET_MICROPHONIC_V,
-                                      cfg.DELTA_C_MITIGATED_F, cfg.F_MOD_HZ)
+    i_micro = microphonic_current(cfg.V_OFFSET_MICROPHONIC_V,
+                                  cfg.DELTA_C_MITIGATED_F, cfg.F_MOD_HZ)
+    i_emi = emi_rectified_current(responsivity_bound_V_inv(), 1.0 / r_j,
+                                  cfg.V_RF_AT_JUNCTION_V)
+    i_gnd = ground_loop_current(v_gnd, r_j)
+    i_cal = calibration_drift_current(i_claim)
+    return {
+        "i_thermo": i_thermo, "i_micro": i_micro, "i_emi": i_emi,
+        "i_gnd": i_gnd, "i_cal": i_cal,
+        "rss": rss(i_thermo, i_micro, i_emi, i_gnd, i_cal),
+    }
+
+
+def budget_at(label, r_j):
+    i_claim = claimed_signal_for(label)
+    floor = current_rss_floor(r_j, i_claim, cfg.V_GND_RESIDUAL_V)
     i_micro_worst = microphonic_current(cfg.V_OFFSET_MICROPHONIC_V,
                                         cfg.DELTA_C_WORST_F, cfg.F_MOD_HZ)
-    i_emi = emi_rectified_current(responsivity_V_inv(0.25, 25.0), g_j,
-                                  cfg.V_RF_AT_JUNCTION_V)
-    i_gnd = ground_loop_current(cfg.V_GND_RESIDUAL_V, r_j)
     i_gnd_norev = ground_loop_current(cfg.V_GND_NO_REVERSAL_V, r_j)
-    i_anomalous_equiv = cfg.V_ANOMALOUS_OFFSET_V / r_j  # what a 6 uV EMF looks like
-
-    i_rss = rss(i_thermo, i_micro_amb, i_emi, i_gnd)
+    i_anomalous_equiv = cfg.V_ANOMALOUS_OFFSET_V / r_j
     i_johnson = johnson_noise_current(r_j, cfg.TEMP_K, 1.0)
     t_int = integration_time_for_3sigma(i_claim, i_johnson)
+    v = decide(VerdictInput(label, i_claim, floor["rss"], i_johnson, t_int))
+    hours_to_exclusion = cfg.STORED_CHARGE_EXCLUSION_C / i_claim / 3600.0
 
-    v = decide(VerdictInput(label, i_claim, i_rss, i_johnson, t_int))
-
-    hours_to_10mC = cfg.STORED_CHARGE_EXCLUSION_C / i_claim / 3600.0
+    sensitivity = {}
+    for case, v_gnd in cfg.V_GND_SENSITIVITY_CASES_V.items():
+        f = current_rss_floor(r_j, i_claim, v_gnd)
+        sv = decide(VerdictInput(label, i_claim, f["rss"], i_johnson, t_int))
+        sensitivity[case] = sv
 
     return {
-        "label": label, "r_j": r_j,
-        "i_claim": i_claim, "i_thermo": i_thermo,
-        "i_micro_amb": i_micro_amb, "i_micro_worst": i_micro_worst,
-        "i_emi": i_emi, "i_gnd": i_gnd, "i_gnd_norev": i_gnd_norev,
-        "i_anomalous_equiv": i_anomalous_equiv,
-        "i_rss": i_rss, "i_johnson": i_johnson, "t_int": t_int,
-        "hours_to_10mC": hours_to_10mC, "verdict": v,
+        "label": label, "r_j": r_j, "i_claim": i_claim, **floor,
+        "i_micro_worst": i_micro_worst, "i_gnd_norev": i_gnd_norev,
+        "i_anomalous_equiv": i_anomalous_equiv, "i_johnson": i_johnson,
+        "t_int": t_int, "hours_to_exclusion": hours_to_exclusion,
+        "verdict": v, "sensitivity": sensitivity,
     }
 
 
 def main():
     out = io.StringIO()
     w = out.write
-    w("# Phase-1 simulation results — C1 Casimir-cavity MIM rig (intent 513)\n\n")
+    w("# Phase-1 simulation results — C1 Casimir-cavity MIM rig (intent 513, PT-513-corrected)\n\n")
     w("Generated by `sim/phase1_model.py`. Parameter provenance: `sim/config.py` "
       "(every value tagged [extracted]/[assumption]); primary-source sheet: "
       "`docs/casimir-device-parameters.md`.\n\n")
@@ -89,80 +113,105 @@ def main():
     for phi, s_nm, g, r in simmons_sanity():
         w(f"| {phi} | {s_nm} | {g:.3g} | {eng(r, 'ohm')} |\n")
     w("\nExtracted reference-device band: 120-6100 ohm (PRR-SM). The Simmons sweep "
-      "over the extracted barrier x thickness envelope brackets this band, so the "
-      "papers' stated geometry and stated impedances are mutually consistent — no "
-      "parameter tuning applied. (Thin/low-barrier corner is far more conductive; "
-      "real devices sit toward the thick/high-barrier corner, as expected with "
-      "series NiOx+Al2O3 and image-force lowering unmodeled.)\n\n")
+      "over the extracted barrier x thickness envelope brackets this band with no "
+      "parameter tuning — the papers' stated geometry and impedances are mutually "
+      "consistent. (Validates the model for artifact scaling; says nothing about "
+      "the cavity effect itself.)\n\n")
 
-    w("## 2. Artifact budget at each junction impedance point\n\n")
+    w("## 2. Criterion scope (pre-registered reconciliation vs 511)\n\n")
+    w("511 pre-registered '3x the RSS of budget terms 1-7'. Rows 5 (coulombs) and 7 "
+      "(watts) are dimensionally incompatible with a current RSS. **The operative "
+      "criterion from here forward is: 3x RSS(rows 1,2,3,4,6 as current-equivalents) "
+      "AND the row-5 integrated-charge gate AND the row-7 power-audit gate.** This is "
+      "a deliberate, explicit narrowing of 511's literal text, recorded here before "
+      "any hardware exists (PT-513 correction #3).\n\n")
+
+    w("## 3. Artifact budget at each junction impedance point\n\n")
     results = [budget_at(lbl, r) for lbl, r in cfg.R_J_POINTS_OHM.items()]
     for res in results:
         v = res["verdict"]
         w(f"### {res['label']} — R_j = {eng(res['r_j'], 'ohm')}\n\n")
         w("| quantity | value | vs claimed signal |\n|---|---|---|\n")
-        w(f"| claimed signal (SYM figure-read) | {eng(res['i_claim'], 'A')} | 1x |\n")
+        w(f"| claimed signal (figure-read) | {eng(res['i_claim'], 'A')} | 1x |\n")
         for key, name in [("i_thermo", "row 1 thermo-EMF (S*dT/R_j)"),
-                          ("i_micro_amb", "row 2 microphonics (mitigated)"),
+                          ("i_micro", "row 2 microphonics (mitigated)"),
                           ("i_micro_worst", "row 2 microphonics (UNMITIGATED worst)"),
                           ("i_emi", "row 3 EMI rectification (60 dB shield)"),
-                          ("i_gnd", "row 4 ground residual (with current-reversal)"),
-                          ("i_gnd_norev", "row 4 ground residual (NO reversal)"),
+                          ("i_gnd", "row 4 ground residual (0.1 uV rig target)"),
+                          ("i_gnd_norev", "row 4 ground residual (1 uV, no reversal)"),
+                          ("i_cal", "row 6 calibration drift (1% of signal)"),
                           ("i_johnson", "Johnson noise (A/rtHz)")]:
             ratio = res[key] / res["i_claim"]
             w(f"| {name} | {eng(res[key], 'A')} | {ratio:.2e} |\n")
-        w(f"| **RSS artifact floor (mitigated rows 1-4)** | {eng(res['i_rss'], 'A')} | "
-          f"{res['i_rss']/res['i_claim']:.2e} |\n")
+        w(f"| **RSS floor (rows 1,2,3,4,6 — mitigated)** | {eng(res['rss'], 'A')} | "
+          f"{res['rss']/res['i_claim']:.2e} |\n")
         w(f"| 6 uV anomalous-offset current-equivalent | {eng(res['i_anomalous_equiv'], 'A')} | "
           f"{res['i_anomalous_equiv']/res['i_claim']:.2e} |\n\n")
         w(f"- White-noise 3-sigma integration time: {res['t_int']:.2e} s (trivial)\n")
-        w(f"- Row 5 stored-charge exclusion: {res['hours_to_10mC']:.1f} h of sustained "
-          f"claimed signal to integrate 10 mC (papers demonstrate only a 4 h window)\n")
-        w(f"- Row 6 calibration: {calibration_drift_fraction()*100:.0f}% class — "
-          f"negligible vs the ~50x claimed conductance contrast\n")
-        w(f"- Row 7 hidden-input audit floor: {eng(hidden_input_resolution_W(), 'W')} vs "
-          f"claimed max power {eng(cfg.P_CLAIMED_MAX_W, 'W')} — NOTE: audit floor is "
-          f"ABOVE the claimed device power; see caveat in section 3\n")
-        w(f"- **VERDICT: {'GO' if v.go else 'NO-GO'}** — margin "
-          f"{v.margin:.1f}x over the 3x RSS floor; limiting factor: {v.limiting_factor}\n\n")
+        w(f"- Row 5 gate: {res['hours_to_exclusion']:.1f} h of sustained claimed signal to "
+          f"integrate {eng(cfg.STORED_CHARGE_EXCLUSION_C, 'C')} (papers demonstrate only 4 h)\n")
+        w(f"- Row 7 gate: audit floor {eng(hidden_input_resolution_W(), 'W')} vs claimed max "
+          f"power {eng(cfg.P_CLAIMED_MAX_W, 'W')} — floor is ABOVE claimed device power; "
+          f"see L3 caveat (finding 4)\n")
+        w(f"- Baseline verdict (0.1 uV rig target): **{'GO' if v.go else 'NO-GO'}** — margin "
+          f"{v.margin:.1f}x over the 3x RSS floor\n\n")
 
-    w("## 3. Findings that shape the build\n\n")
-    w("1. **The claimed signal is LARGE relative to a competent artifact floor.** At every "
-      "impedance point the mitigated RSS floor sits 2-4 orders below the claimed ~50 nA — "
-      "the rig CAN discriminate at >=3 sigma. Detection is not the hard part.\n")
-    w("2. **The battle is at the microvolt level.** The papers' anomalous offsets are ~6 uV; "
-      "any parasitic EMF of that scale through these LOW-IMPEDANCE junctions (120 ohm-6.1 kohm) "
-      "reproduces the claimed currents exactly (see the 6 uV row: ~1x-50x of signal). "
-      "Sub-uV EMF discipline + current-reversal + the cavity-modulation discriminator "
-      "is where the falsification power lives, exactly as the 511 budget row-4 anticipated.\n")
-    w("3. **Row 5 (stored charge/chemistry) requires MULTI-DAY runs**: ~56 h of sustained "
-      "signal to pass the 10 mC exclusion; the papers only demonstrate 4 h + a 6-month "
-      "retest. Our protocol must run longer than the primary sources did.\n")
-    w("4. **Row 7 caveat (pre-registered honestly): the claimed DEVICE power (1.4 pW) is far "
-      "below any practical power-audit floor (~1 uW).** The hidden-input audit therefore "
-      "cannot bound pW-scale smuggled power; it bounds uW-scale inputs only. Consequence: "
-      "the L3 'net usable energy' bar CANNOT be certified at single-device scale by input "
-      "metering alone — L3 would require either large arrays (10^6 x scale-up) or "
-      "calorimetric methods. L1/L2 (does the cavity-correlated signal exist and survive "
-      "artifact exclusion) remain fully testable and are the Phase-2 target.\n")
-    w("5. **Ambient-vibration and EMI rows are comfortable** ONLY because of the 60 dB "
-      "enclosure + rigid triax mounting; the unmitigated microphonics row shows the "
-      "penalty for sloppy mechanics is ~2 orders of magnitude.\n\n")
-
-    w("## 4. Go/no-go summary\n\n")
-    w("| impedance point | margin over 3x RSS floor | verdict |\n|---|---|---|\n")
+    w("## 4. Ground-EMF sensitivity — THE load-bearing assumption (PT-513 correction #2)\n\n")
+    w("The baseline GO assumes the rig holds residual ground/parasitic EMF to 0.1 uV — "
+      "10x tighter than the papers' stated instrument precision and 60x tighter than the "
+      "source group's own persistent, unexplained ~6 uV cavity-device anomaly. The verdict "
+      "under each EMF floor:\n\n")
+    w("| impedance point | " + " | ".join(cfg.V_GND_SENSITIVITY_CASES_V.keys()) + " |\n")
+    w("|---|" + "---|" * len(cfg.V_GND_SENSITIVITY_CASES_V) + "\n")
     for res in results:
-        v = res["verdict"]
-        w(f"| {res['label']} | {v.margin:.0f}x | {'GO' if v.go else 'NO-GO'} |\n")
-    w("\n**Overall: GO for L1/L2 falsification testing at photolitho device scale, "
-      "with the explicit L3 limitation in finding 4.** The rig proceeds as designed in "
-      "the promoted 511 dossier; no architecture change indicated.\n")
+        cells = []
+        for case in cfg.V_GND_SENSITIVITY_CASES_V:
+            sv = res["sensitivity"][case]
+            cells.append(f"{'GO' if sv.go else 'NO-GO'} ({sv.margin:.1f}x)")
+        w(f"| {res['label']} | " + " | ".join(cells) + " |\n")
+    w("\n**Reading:** at the low-impedance end (120 ohm) the GO margin collapses from "
+      "~17x to ~2x at the papers' own precision floor and to NO-GO at their 6 uV anomaly "
+      "level. At the high-impedance end (6.1 kohm) GO survives all three cases. "
+      "**Design consequence (pre-registered): the build prioritizes HIGH-R_j devices "
+      "(kohm-class and above), where the verdict is robust to the EMF floor we may "
+      "actually achieve, and treats any low-R_j result as inconclusive unless the rig "
+      "demonstrates sub-uV EMF control on dummy runs first.**\n\n")
+
+    w("## 5. Findings that shape the build\n\n")
+    w("1. **Detection is easy; attribution is the whole game.** All mitigated floors sit "
+      "far below the claimed ~50 nA. The falsification power lives in the modulation "
+      "discriminator + the uV-level EMF discipline.\n")
+    w("2. **The battle is at the microvolt level** — a parasitic EMF at the papers' own "
+      "unexplained ~6 uV offset scale reproduces 12-100%+ of the claimed signal through "
+      "low-impedance junctions. Section 4 quantifies exactly when this kills the verdict.\n")
+    w("3. **Row 5 requires ~56 h sustained-signal runs** — longer than the 4 h the primary "
+      "sources ever demonstrated continuously.\n")
+    w("4. **L3 caveat (pre-registered): claimed device power (1.4 pW) is ~6 orders below a "
+      "practical uW-class audit floor.** Input metering cannot certify 'net usable energy' "
+      "at single-device scale; L3 needs ~1e6-device arrays or calorimetry. Phase 2 targets "
+      "L1/L2 only.\n")
+    w("5. **Mechanics matter by ~2 orders** (unmitigated microphonics row): rigid triax "
+      "mounting + the modulated-dummy control are load-bearing.\n")
+    w("6. **Cost honesty:** BOM list-price ceiling ($9.9k) EXCEEDS 511's $7.5k envelope "
+      "ceiling by 32%; only the used-market path (~$3.4-5k) fits. This is a 511-envelope "
+      "revision trigger for the operator, not a silent gloss (PT-513 correction #7).\n\n")
+
+    w("## 6. Go/no-go summary\n\n")
+    w("**GO for L1/L2 falsification testing, CONDITIONED on high-R_j device selection** "
+      "(kohm-class+, where the verdict survives all three EMF-floor cases) **and a "
+      "demonstrated sub-uV dummy-run EMF floor before any DUT measurement.** NO-GO at "
+      "low R_j unless that demonstration succeeds. L3 out of scope at single-device "
+      "scale (finding 4). No architecture change to the promoted 511 design.\n")
 
     path = os.path.join(os.path.dirname(__file__), "..", "docs", "phase1-sim-results.md")
     with open(os.path.normpath(path), "w", encoding="utf-8", newline="\n") as f:
         f.write(out.getvalue())
-    print(out.getvalue()[:2000])
-    print(f"... written to {os.path.normpath(path)}")
+    print(f"written to {os.path.normpath(path)}")
+    for res in results:
+        line = f"{res['label']}: baseline {'GO' if res['verdict'].go else 'NO-GO'} ({res['verdict'].margin:.1f}x); "
+        line += "; ".join(f"{c.split(' (')[0]}={'GO' if s.go else 'NO-GO'}({s.margin:.1f}x)"
+                          for c, s in res["sensitivity"].items())
+        print(line)
 
 
 if __name__ == "__main__":
