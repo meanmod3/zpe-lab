@@ -56,7 +56,8 @@ that discriminate rather than merely repeat.** Three design choices do the discr
 The analysis is already **frozen, before any device exists**: blinded run labels held apart
 from the analyst, instrument constants cryptographically sealed before the blind draw, a
 quantified seven-class artifact budget with a pre-registered 3σ criterion, and golden-vector
-regression tests that make post-hoc changes to the arithmetic visible. The pipeline survived
+regression tests that make post-hoc changes to the arithmetic visible. Everything is public at **github.com/meanmod3/zpe-lab** — protocols, pipeline, benchmarks,
+price-verified parts lists, and the full revision history. The pipeline survived
 three rounds of adversarial review I commissioned against my own work — **round one BLOCKED
 it** after demonstrating, with running code, that it could be fooled by an actuation-correlated
 artifact and unblinded through a run-naming leak. The revision history preserves every attack
@@ -122,9 +123,7 @@ methodology for testing contested single-group claims.
 > - Manifund requires an account to post — yours to create; paste sections into their form.
 > - The probability triple (3/55/42) is my calibrated read of the program's promoted
 >   artifacts; adjust if your own priors differ — they're YOUR public numbers once posted.
-> - When posting, link the zpe-lab repo (or a public mirror) for "inspectable before you
->   fund" to be literal — the repo currently has no public remote; creating one is an
->   operator decision (registry says: create remote when artifacts warrant → this is that
->   moment, if you want the Manifund page to carry receipts).
+> - RESOLVED: public mirror live at https://github.com/meanmod3/zpe-lab (published
+>   2026-07-11, history audited) — the page now links it directly.
 > - Cross-link this page in the Experiment.com campaign and mention it if EV asks for
 >   supporting material.
