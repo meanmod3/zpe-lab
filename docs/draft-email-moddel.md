@@ -13,11 +13,11 @@ Dear Prof. Moddel,
 I am preparing an independent experimental replication of the Casimir-cavity MIM device
 results your group reported in "Casimir-cavity-induced conductance changes" (Phys. Rev.
 Research 3, L022007, 2021) and "Optical-Cavity-Induced Current" (Symmetry 13, 517, 2021).
-As you noted in your 2022 JSE article, the main source of skepticism about these results is
-thermodynamic, and after five years there is still no published independent replication —
-I would like to change that with a fabrication-independent, blinded test, designed and
-pre-registered before any device is measured. A null result or an artifact attribution would
-be published with the same care as a confirmation.
+These are extraordinary claims facing the well-known thermodynamic objection, and after five
+years there is still no published independent replication — I would like to change that with
+a fabrication-independent, blinded test, designed and pre-registered before any device is
+measured. A null result or an artifact attribution would be published with the same care as
+a confirmation.
 
 The published figures are the only public form of your data (the Symmetry data-availability
 statement notes all analyzed data is included in the article), and figure-reads limit how
@@ -49,11 +49,13 @@ fine)?
   retained.
 
 **Three specific questions, if you can spare the time:**
-1. The PRR Supplemental notes a persistent anomalous voltage offset of order ~6 µV on
-   cavity devices that resisted your artifact tests. Is the underlying dataset (offset vs.
-   time/device/configuration) available? For a low-impedance junction this offset scale is
-   exactly where my artifact budget concentrates, so it is the single most valuable dataset
-   you could share.
+1. My reading of the PRR Supplemental Material is that cavity-equipped devices showed
+   persistent anomalous voltage/current offsets (of order several µV in voltage) that your
+   correction methods did not fully eliminate — please correct me if I have misread the SM.
+   If that is right, is the underlying dataset (offset vs. time / device / configuration)
+   available? For a low-impedance junction, microvolt-scale parasitic EMFs are exactly where
+   my artifact budget concentrates, so this is the single most valuable dataset you could
+   share.
 2. Your JSE 2022 article mentions measurements near 80 K showing the effect does not
    diminish with temperature. Is that dataset shareable, even informally? It bears directly
    on thermoelectric exclusion.
@@ -87,8 +89,13 @@ Best regards,
 > **Operator notes (not part of the email):**
 > - The email deliberately states the falsification-first framing plainly — Moddel knows the
 >   skepticism landscape; pretending otherwise would read as bad faith.
-> - It offers reciprocity (protocol + pre-submission manuscript) without committing you to
->   anything beyond courtesy.
+> - **The "manuscript before submission" line is a REAL promise you make by sending** (PT-520
+>   correction #4): standard collegial practice, but strike it if you don't want to carry it.
+> - Q1's ~µV offset framing is deliberately hedged "my reading of the SM… correct me if I
+>   have misread": our source is the full-text PRR-SM extraction
+>   (docs/casimir-device-parameters.md §B4, ~6 µV) plus a search-verified quote ("unable to
+>   eliminate the anomalous voltage and current offsets"), but the 513 PT's residual — eyeball
+>   the PRR-SM PDF yourself before sending — still stands.
 > - The three questions are ranked by value to us: (1) the 6 µV offset dataset >
 >   (2) the 80 K data > (3) the unpublished-replications clarification.
 > - If no reply in ~2 weeks, a polite single follow-up is normal academic practice; beyond

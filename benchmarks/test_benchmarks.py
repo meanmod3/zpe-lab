@@ -38,12 +38,12 @@ def test_anchor_prr_caption_values(data):
 
 def test_anchor_sym_max_power(data):
     """Isc*|Voc|/4 from the digitized 33 nm I-V must bracket the paper's stated
-    1.4 pW within read uncertainty (figure-read gives ~1.76 pW; accept 2x)."""
+    1.4 pW within read uncertainty (figure-read gives ~1.76 pW, a 26% gap; rel=0.5 discriminates while allowing the read error — tightened per PT-520 #7)."""
     ds = dataset(data, "sym-fig4a-Iv-33nm")
     isc_nA = interp(ds, 0.0)                     # I at V=0
     voc_mV = 0.088                               # from dataset notes (read: ~-0.088 mV)
     p_W = abs(isc_nA * 1e-9 * voc_mV * 1e-3) / 4
-    assert p_W == pytest.approx(data["anchors_verified"]["sym_max_power_W"], rel=1.0)
+    assert p_W == pytest.approx(data["anchors_verified"]["sym_max_power_W"], rel=0.5)
     assert p_W > 0
 
 def test_cross_figure_consistency_fig4a_vs_4b(data):

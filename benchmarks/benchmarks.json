@@ -2,7 +2,7 @@
   "schema_version": 1,
   "intent": 520,
   "extracted": "2026-07-11",
-  "source_images": "benchmarks/figs/ (publisher-hosted figure exports, preserved for PT re-verification)",
+  "source_images": "benchmarks/figs/ \u2014 17 valid publisher figure exports preserved for PT re-verification (7 additional fetch attempts returned Access-Denied HTML and were removed at PT-520; every digitized dataset is backed by one of the 17 valid images)",
   "provenance_note": "Both papers are from the same research group (Moddel et al., University of Colorado Boulder) and describe the same underlying device family (Casimir-cavity MIM photoinjectors); PRR is a companion/follow-up to the Symmetry paper. These are NOT independent replications. All numeric values are approximate figure-reads from publisher-hosted raster images (MDPI PNG exports for Symmetry 13,517; APS 'large' deliverable PNGs for PRR 3,L022007) at native resolutions ~900-1250 px (SYM) and 800 px (PRR) on the long axis. Two PRR anchor values (G at V=0 for 33 nm and 1100 nm, Fig. 3) come from the figure caption text and are essentially exact; all other points are visual/pixel estimates with per-dataset read uncertainty. Unreadable points omitted (see not_extracted). Figure-reads are for ORDER/TREND comparison and pre-registration of expected magnitudes, not precision fitting.",
   "datasets": [
     {
