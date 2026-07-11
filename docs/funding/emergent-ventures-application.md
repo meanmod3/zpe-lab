@@ -1,4 +1,12 @@
-# Emergent Ventures application — FORMAL REQUEST (ready for operator review + submission)
+# Emergent Ventures application — SUBMITTED 2026-07-11
+
+> **STATUS: SUBMITTED** by the operator (form filled collaboratively in-browser; operator
+> completed consents + CAPTCHA + Submit). EV states responses typically arrive within a
+> week — check by ~2026-07-18; if silence stretches past ~3 weeks, a polite status inquiry
+> to the EV team is acceptable. As-submitted deltas from this draft: restructured to EV's
+> mandated 3-part format (personal story / consensus-view answer = the second law /
+> the idea), 974 words; budget + itemized breakdown entered in the form's dedicated fields;
+> tweet-length pitch (248 chars) led with the $12M-startup-zero-tests hook.
 
 > DRAFT — submission is the operator's act (the EV form also asks short bio/contact
 > questions only you can complete). Proposal below is ~1,050 words, inside the ~1,500 cap.
