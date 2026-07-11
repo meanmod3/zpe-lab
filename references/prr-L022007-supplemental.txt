@@ -1,0 +1,253 @@
+                                    Supplementary Material
+
+                             Casimir-cavity-induced conductance changes
+                  Garret Moddel,* Ayendra Weerakkody, David Doroski and Dylan Bartusiak
+      Department of Electrical, Computer, and Energy Engineering, University of Colorado, Boulder,
+
+                                              Colorado, 80309-0425, USA
+Device fabrication
+In this work we fabricated metal-insulator-metal (MIM) devices, processed either by a germanium shadow-
+mask (GSM) process or standard photolithographic techniques.
+GERMANIUM SHADOW-MASK DEVICES
+The small feature sizes of the GSM devices, with critical dimensions on the order of hundreds of
+nanometers, are accomplished by using angled depositions underneath a germanium bridge that is supported
+by a polymethyl methacrylate (PMMA) under-layer, shown below in Fig. S1. This is a technique that has
+been employed in our group previously to make small area MIM diode junctions [1].
+
+FIG S1: Cross-sectional view of the GSM process with materials deposited under the bridge.
+To begin this process, a thermally oxidized silicon wafer with 300 nm of SiO2 is spin coated with 4%
+PMMA in anisole at 1960 RPM for 45 seconds followed by a 15-minute curing bake at 180°C, resulting in
+a 260 nm thick PMMA coating. Then 60 nm of germanium is thermally evaporated onto the PMMA at a
+
+                                                               1
+rate of 5 Å/sec. The germanium is then patterned, using a DUV stepper at University of California, Santa
+Barbara NanoFabrication Facility. This created the opening for the MIM depositions yielding a bridge that
+is 250 nm wide and 300 nm long. Once patterned, germanium is etched using an inductively coupled plasma
+(ICP) reactive ion etch (RIE) system with CHF3/CF4/O2 gasses at a pressure of 0.5 Pa for 135 seconds. ICP
+power is 75 W with a RF substrate bias of 75 W. This step completely etches through germanium and etches
+~30 nm of underlying PMMA. Once the germanium is etched, a RIE system is used to completely etch the
+remaining PMMA in O2 with a power of 100 W at a pressure of 350 mTorr for 6 minutes. An illustrated
+top view of the patterned germanium shadow mask is shown below in Fig. S2. The leads and pads used in
+GSM devices are similar to those shown for the large area devices shown in Fig. S3.
+
+FIG S2: Top view of a GSM prior to any material depositions.
+
+Once the GSM is complete, the MIM structure is formed using angled evaporations, as depicted in Fig. S1.
+First, 50 nm of Ni is thermally evaporated (1.5 Å/sec) at an angle of 39.3°. Next, 1.3 nm of non-
+stoichiometric Al2O3 is RF sputtered at 75 W with 30 sccm O2 and 20 sccm Ar using an Al2O3 target. Since
+this is not an in-situ process, native oxide growth on Ni base metal is inevitable. Based on our electrical
+measurements (linear current-voltage characteristics and <30  zero-bias differential resistance) and
+simulations on Ni/native NiOx/Pd structures, we extracted a NiOx thicknesses of 0.6-1 nm for effective
+barrier heights of 0.06-0.08 eV [2]. The barrier height was calculated by performing Fowler-Nordheim
+analysis on a low resistance (~100 ) device with nonlinear current-voltage characteristics. Hence, the
+total effective insulator thickness for the Al2O3/NiOx combination is 2.3 nm. The MIM structure is
+completed with 11 nm of thermally evaporated Pd (1.3 Å/sec), angled at 39.3° opposite to the direction of
+Ni evaporation. Taking into account the angle of evaporation, the thickness of Ni base metal is 38 nm, and
+the thickness of Pd upper electrode is 8.3 nm. PMMA and Ge is then lifted off using acetone. The final step
+in the process is to defined the Casimir cavity over the MIM junction with an area of 7 µm2 using standard
+photolithographic techniques via an etch-through process. To accomplish this, PMMA is spun on the wafer,
+
+                                                               2
+with thicknesses ranging from 30 nm to 1100 nm, followed by a thermally evaporated 150 nm thick
+aluminum layer at a rate of 6 Å/sec. Finally, the aluminum and PMMA are wet etched and dry etched,
+respectively.
+
+LARGE AREA DEVCES
+
+Large area devices are made using standard photolithographic techniques on a thermally oxidized silicon
+wafer with 300 nm SiO2. NR9 resist is patterned for the bottom metal and 50 nm of Ni is then thermally
+evaporated at a rate of 2.7 Å/sec and lifted off in heated (60 °C) RR5. As with the GSM devices, the native
+oxide growth on exposed Ni is inevitable, and hence we measured a native NiOx thickness of 2.3 nm by
+variable angle spectroscopic ellipsometry (VASE), described below. This is thicker than for GSM structures
+as the junctions in GSM structures is partially protected by the germanium bridge. A blanket layer of 1.3
+nm, non-stoichiometric Al2O3 is RF sputtered at 75 W with 30 sccm O2 and 20 sccm Ar using an Al2O3
+target. NR9 is patterned for the upper electrode, Pd which is evaporated with thicknesses from 8.7 nm to
+24 nm (1.5 Å/sec). Unfortunately, descumming is not an option because it would induce additional oxide
+growth, and thus a monolayer (0.4 nm) of NR9 resist is not removed prior to Pd deposition. The upper
+electrode Pd is patterned such that a square area overlaps on top of the Ni pad ranging in size from 6.25
+µm2 to 10000 µm2. Palladium is lifted off once more with RR5 at 60° C. Once the MIM device is complete,
+NR9 is patterned for the definition of the Casimir cavity. This pattern is centered over the MIM junction
+and sized so that it overshadows the MIM device. Then the cavity oxide and mirror are deposited, with the
+cavity oxide typically 12 nm of SiO2 deposited via RF sputtering SiO2 target at 50 W with 30 sccm O2 and
+20 sccm Ar gasses. The cavity pattern is formed by liftoff in RR5 heated to 60 °C, resulting in the device
+depicted in FIG S3.
+
+FIG S3: Top view of a standard photolithography device with the Casimir cavity.
+
+                                                               3
+Electrical Measurements
+Once the MIM structures were fabricated, current-voltage (I(V)) measurements were performed with a
+precision of 1 µV and <1 nA in voltage and current, respectively. We used a four-point probe configuration
+to perform I(V) measurements so that the active MIM junction could be isolated from parasitic lead
+resistance. A high precision Keithley 2612 source meter (calibrated to NIST standards) was used to source
+either voltage or current across two pads and a HP 3478A digital multimeter (DMM) was used to measure
+the voltage drop across the junction. We incorporated a mercury switch to short out all the four contact pads
+during probe manipulation to prevent static discharge from damaging the MIM junction. Although, sourcing
+a voltage and measuring the current using the source meter is the standard and most straightforward
+approach of taking I(V) measurements, this technique is problematic when measuring currents on the order
+of 1 nA through a device having a resistance less than 1 M [See: Keithley: Series 2600 system
+sourcemeter, User's manual, United States America (2006)]. This is because the precision of the source
+meter in voltage sourcing mode is low, as the voltage offset is large (applied bias + 0.02% + 250 µV). For
+instance, if we are measuring a device with a differential resistance of 1 k with 1 nA precision, the
+corresponding voltage is 1 µV, which is within the error. On the other hand, if we measure a 1 M device
+in 1 nA precision, the corresponding voltage is 1 mV, and thus the measurement can be done without
+significant error. Using this standard measurement setup, we tested reference MIM structures with
+differential resistances of ~200  and resistors with matching resistances. We observed an offset current of
+~60 nA and an offset voltage of ~10 µV even after applying the current reversal method to eliminate any
+systematic contribution, such as a thermoelectric offset due to the temperature difference between the
+source meter and the probes [See: C. Miller, Techniques for Reducing Resistance Measurement
+Uncertainty: DC Current Reversals vs. Classic Offset Compensation, White paper, Keithley Instruments,
+Inc. (2004)]. In using the current reversal method, we performed two measurements with currents of
+opposite polarity, one when the base metal is grounded, another when the upper electrode was grounded.
+Then we subtracted the current for the scenario when base electrode was grounded from the current when
+upper electrode is grounded. Hence, the effect due to thermoelectric potentials was eliminated.
+
+Alternatively, sourcing a current and measuring voltage is much more precise (applied current ± 0.06% +
+100 pA) according to manufacturer specifications [See: Keithley: Series 2600 system sourcemeter, User's
+manual, United States America (2006)]. We used the same four-point-probe configuration, two probes to
+source current and measure voltage using the source meter and the other two probes connected to the DMM
+to measure the voltage drop across the junction. We verified the precision of measurement configuration
+by performing I(V) sweeps on four types reference MIM structures:
+
+                                                               4
+         1) With a 1100 nm thick Casmir cavity
+         2) With only the cavity dielectric (without the Al reflector)
+         3) Without the cavity dielectric, but annealed at 180° C for 15 minutes to match processing
+
+              conditions that the device undergo when defining the cavity
+         4) Completed, with resistances varying from 120  to 6100 .
+We also performed I(V) measurements on resistors with matching resistance values. However, due to the
+use of two different metals having different work functions in MIM junctions, a contact potential can be
+created across the two metals which does not occur with resistors, and hence we used MIM devices as the
+reference/control devices. These measurements were carried out using a manufacturer-calibrated Keithley
+source meter. As shown in Fig. S4(a), it is evident that the current and voltage offset values are <1 nA and
+<1 µV, respectively for reference MIM devices with no Casimir cavities after applying the offset correction
+using the current reversal method.
+We used both voltage-sourcing and current-sourcing measuring techniques depending on the differential
+resistance of the device under test and the precision required for the measurement.
+
+FIG S4: (a) Current-voltage characteristics on reference MIM devices, which have no Casimir cavities with
+different resistance values. (b) Current and voltage offsets for individual GSM device and 4 x 4 arrays
+produced under the same conditions; every data point corresponds to an average over 6 devices.
+
+As discussed in the main text, the main objective here is to eliminate sources of error that could produce
+artifacts in measurements. We accomplished this in the past for MIM structures and resistors without
+Casimir cavities. However, when we formed the Casimir cavity on top of the MIM devices, I(V)
+
+                                                               5
+characteristics did not pass through the origin, as shown in Fig. 5 of the main text. Our first attempt was to
+understand if this offset is generated by a thermal effect, as the offset voltage magnitudes are small (~6
+µV). First, we measured the temperature on the substrate stage (21.6 ° C) and the ambient (23.4 ° C). Since,
+Ni is our base electrode, this could be colder than the Pd upper electrode. If we consider the bulk Seebeck
+coefficients for metals (Ni = -18 µV/° C, Pd = -9 µV/° C) or the insulator (> 100 µV/° C), a temperature
+differential of < 1° C is sufficient to produce these voltage magnitudes. However, since our metals and
+insulators are very thin, it is not possible to calculate the voltage for a given temperature differential by
+using bulk Seebeck coefficients, as they can vary significantly depending on material and electronic
+properties for a given material. Therefore, a series of measurements were performed with the goal of
+observing a change in offset voltage values by varying the stage and ambient temperatures. A heat gun was
+used to elevate the temperature of the stage up to 24.8 ° C (without varying the temperature of ambient).
+We then measured the voltage offset which did not vary over a duration of 20 minutes from the value it had
+before the heat gun was applied. We performed the same experiment by increasing the temperature of the
+ambient (without varying the temperature of the stage), and again observed no difference in offset voltage.
+In a third experiment, we cooled down the temperature of the ambient to 21 ° C using a portable air
+conditioner, and once more no difference in offset voltage was observed. Hence, the temperature of the
+base and upper electrodes remains very close to each other, and the observed offset voltage cannot be
+generated solely due to a thermal effect.
+
+FIG S5: Current offset with no applied voltage as a function of time for a 38 nm Ni/1.7 nm Al2O3+NiOx/8.3
+nm Pd/33 nm PMMA/150 nm Al device.
+
+Another artifact check was performed by making measurements on arrays of GSM Casimir photoinjectors
+configured as 16 devices with pairs of devices in series and parallel, so that each array contains four sets of
+devices in parallel and also in series. If the results obtained with single devices are accurate, then the offsets
+
+                                                               6
+in both voltage and current should scale with the number of devices in the array, in this case, a factor of
+four. As can be seen in Fig. S4(b), the current and voltage offset for the arrays are, in fact, a factor of four
+larger than those for a single device. This further confirms that the offset is not a measurement artifact.
+
+Another possibility is the offset could be due to some sort of hysteresis effect or transient response caused
+by charge buildup at thin metal-insulator interfaces. If so, the measured current should decay over time. To
+test for this, the current with no applied voltage was measured as a function of time for over 4 hours. No
+decay in the offset current was observed, as can be seen in Fig. S5. This shows that the offset is not due to
+a charging effect, and this is further confirmed by hysteresis measurement, in which no hysteresis was
+observed.
+
+With the goal of investigating whether variations in the conductance are due to the full Casimir cavity or
+just the presence of the dielectric, or some special property of PMMA rather than the presence of a Casimir
+cavity, we performed a study on devices at sequential stages of formation with cavities comprising either
+PMMA or SiO2 transparent dielectrics, as can be seen in Fig S6. The purpose for including an annealed
+MIM structure is to simulate the thermal effects of the processing used to pattern the cavity dielectric and
+mirror. It is evident that the differential conductance values of the completed device with mirrors are
+significantly higher compared to devices without a Casimir cavity or with a cavity dielectric but without
+mirrors, supporting the Casimir cavity model for the conductance change, and showing that measurement
+and processing anomalies cannot explain the results.
+
+FIG S6: Differential conductance for devices with and without Casimir cavity. The devices with PMMA
+transparent dielectric (36 nm) had an effective transport insulator of 1.7 nm (native NiOx+Al2O3) whereas
+devices with SiO2 transparent dielectric (50 nm) had an effective transport insulator of 1.9 nm (native
+NiOx+Al2O3). The mirror material for all the devices with Casimir cavities was 150 nm of evaporated Al.
+
+                                                               7
+Because of its high near-UV reflectivity, we generally use Al as the mirror material. To understand its
+impact on the results, we compared otherwise identical photoinjector devices having Al mirrors to ones
+with Ag. The device parameters are 38 nm Ni base electrode, 1.9 nm NiO+Al2O3 insulator, 8.3 nm Pd upper
+electrode, 50 nm SiO2 cavity, and 150 nm Al, or 150 nm Ag + 3 nm Ti mirrors. The differential conductance
+with Al and Ag mirrors are 3.1 +/- 0.3 mS and 3.2 +/- 1.5 mS, respectively, even though the reflectivity of
+Ag drops substantially for wavelengths below 450 nm. The similar conductance for the two types of devices
+suggests that the short wavelengths do not produce photoinjected carriers efficiently. That conclusion is
+consistent with the transport of high energy carriers being limited by interband transitions [3].
+
+The probe station that we were using to make measurements has a high precision motorized translational
+stage. Thus, the magnetic field strength was significant around the stage. We performed high precision I(V)
+measurements on a different probe station where there was no motorized stage and observed no difference
+in measurements, i.e., the same offset magnitudes were observed for both current and voltage. To see if the
+ambient lighting can influence I(V) characteristics, we performed hundreds of I(V) measurements with and
+without any light, and we took extra measures to cover the entire probe station with a blackout cloth
+purchased from Thor labs. Again, there were no differences in I(V) characteristics for MIM Casimir
+photoinjectors. We have thus far been unable to eliminate the anomalous voltage and current offsets or find
+an artifact that would explain them. We anticipate reporting the source of these anomalies in a future
+publication.
+
+Variable angle spectroscopic ellipsometry (VASE) measurements for the extraction of thickness and
+optical properties
+To characterize the optical properties and thicknesses of the insulators and transparent cavity filler materials
+we have carried out a series of VASE measurements. The UV-Vis-NIR VASE measurements were
+performed using a spectral range from 0.7 to 6.4 eV (corresponding to a wavelength range  = 194 nm to
+1700 nm), and angles of incidence of 55°­75° with steps of 10° to improve the accuracy of the
+measurement. A Woollam M2000UI VASE tool (located at University of California, Santa Barbara) and
+completeEASE® software were used to measure and analyze thin films deposited or grown on Si substrates.
+The measured data was imported to completeEASE®, which generated a fit for measured experimental data
+by using a Cauchy layer in the transparent region. Then we extracted the thickness and optical properties
+(refractive index and extinction coefficient) of a given thin film using the generated model as explained in
+[See: Débora Gonçalves and Eugene A. Irene, Fundamentals and applications of spectroscopic
+ellipsometry, Química Nova 25(5) 794-800 (2002)]. The extracted parameters are summarized in Table 1.
+
+                                                               8
+Table 1: Summary of measured variable angle spectroscopic ellipsometry analysis.
+
+Material  Refractive index at  =     Band gap (eV)                                Thickness (nm)
+                   300 nm
+ Al2O3                                     6.20                                         2.86
+  SiO2               1.72              > 6.40 eV                                        1.56
+PMMA                 1.49                                                               33.13
+   Pd                1.52                  3.47                                         8.32
+
+We made sure to place a witness sample when depositing each thin film to check whether we have deposited
+the desired thickness under the assumption that the calibrated deposition rates were still valid. Also, we
+used the extracted band gap and Fowler-Nordheim analysis to determine conduction band and valence band
+offset values at the interface of Pd/Al2O3. The conduction band offset (barrier height) of 0.3 eV was
+extracted from Fowler-Nordheim analysis, yielding a valence band offset of 5.9 eV at the interface of
+Pd/Al2O3, hence, it is clear that the contribution from hot holes is weaker than that of hot electrons.
+
+References
+[1] B. Pelz and G. Moddel, Demonstration of distributed capacitance compensation in a metal-insulator-
+metal infrared rectenna incorporating a travelling-wave diode, Journal of Applied Physics 125 234502-1 ­
+234502-7 (2018).
+[2] A. Weerakkody, A. Belkadi, and G. Moddel, unpublished.
+[3] G. Tagliabue, A. S. Jermyn, R. Sundararaman, A. J. Welch, J. S. DuChene, R. Pala, A. R. Davoyan, P.
+Narang, and H. A. Atwater, Quantifying the role of surface plasmon excitation and hot carrier transport in
+plasmonic devices, Nature communications 9 1-8 (2018)
+
+                                  9
+
