@@ -1,5 +1,14 @@
 # Experiment.com campaign — Stage 1: the fabrication run
 
+> **STATUS 2026-07-11: DRAFTED + staged, BLOCKED on operator email verification.** Attempted to
+> launch via the logged-in session; Experiment.com gates project creation behind a "confirm your
+> email address" step (banner: "Please confirm your email address before creating a project").
+> The title-first creation modal works ("Can a chip really draw power from the quantum vacuum? An
+> independent test") once verification clears. OPERATOR STEP: click the confirmation link in the
+> interplore.media inbox (or "resend confirmation" on experiment.com), then say the word and I'll
+> fill the whole wizard (Basics/Budget/Research/Timeline/Team/Ethics) from this draft. Note: their
+> flow then requires (a) peer endorsements and (b) staff review before public launch.
+
 > Format follows Experiment.com's standard sections (context / significance / goals + budget
 > items + lay abstract). STAGED per the funding plan: this campaign funds ONLY the device
 > fabrication run — all-or-nothing mechanics make a small, certain first goal the right play.
