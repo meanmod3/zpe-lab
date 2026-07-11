@@ -1,4 +1,4 @@
-"""Benchmark tests (intent 519 metrics #1-#3): schema, anchors, cross-figure
+"""Benchmark tests (intent 520 metrics #1-#3): schema, anchors, cross-figure
 consistency, and consistency with the frozen pipeline's sourced constants."""
 
 import os

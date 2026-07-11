@@ -1,4 +1,4 @@
-"""Benchmark loader + comparison utilities (intent 519).
+"""Benchmark loader + comparison utilities (intent 520).
 
 Figure-read benchmarks from the two Moddel papers — a COMPARISON layer for the
 frozen analysis pipeline (bd81f70), which this module never modifies. Every
