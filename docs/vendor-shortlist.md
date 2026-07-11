@@ -1,4 +1,4 @@
-# Fabrication-Route Shortlist — C1 Device Wafers (intent 522)
+# Fabrication-Route Shortlist — C1 Device Wafers (intent 525)
 
 **Research only — nothing was contacted, no forms submitted, no accounts created.** All info
 from public websites/rate pages as of 2026-07-11. Facilities without public rate cards are
