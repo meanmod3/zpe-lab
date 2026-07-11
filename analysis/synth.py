@@ -22,16 +22,21 @@ NOISE_A = 5e-12
 
 
 def make_session():
-    """Measured device/rig constants with explicit provenance:
+    """SEALED measured device/rig constants (seal committed pre-draw):
     r_j from the device's own I-V check; q1_dummy_null_A from the Q1.3
     qualification record; mech_phase_deg from the Q1 phase reference."""
-    return {
+    from pipeline import seal_session
+    return seal_session({
         "r_j_ohm": 1.0e3,
         "f_mod_Hz": 1.0,
         "q1_dummy_null_A": 3e-12,
         "mech_phase_deg": 0.0,
-        "power_audit_accounted": True,
-    }
+    })
+
+
+def make_attestations():
+    """Operator attestations delivered WITH the label file at unblinding."""
+    return {"power_audit_accounted": True}
 
 
 def _artifacts_ok(rng):
@@ -41,6 +46,7 @@ def _artifacts_ok(rng):
         "accel_rms_g": 2e-4,
         "gnd_shift_V": 0.2e-6,
         "rf_v_V": 8e-6,
+        "r_j_check_ohm": 1.0e3 * (1 + rng.uniform(-0.05, 0.05)),  # per-run I-V check
         "cal_pre_ok": True, "cal_post_ok": True,
         "charge_C": 1.5e-3,
     }
@@ -57,13 +63,26 @@ def _run(serial, rng, mean_I=0.0, mean_Q=0.0, n_seg=60):
     }
 
 
-def _schedule(n_pairs):
-    """ABBA pair order + two interleaved decoys (protocol minimum)."""
+def draw_schedule(n_pairs, rng):
+    """The operator's RANDOM blind draw (re-PT-515 blocker 2: a deterministic
+    schedule was 100% predictable from campaign size alone). BALANCED-random:
+    equal counts of closed-first and open-first pairs in a random permutation —
+    unpredictable to the analyst, yet linear common-mode drift still cancels to
+    first order (the property the old fixed-ABBA order existed for; odd
+    n_pairs leaves a one-pair residual, noted in the protocol). The two decoys
+    land at random INTERIOR positions (never first, never last — the
+    anti-clustering rule the fixed schedule violated)."""
+    if n_pairs < 2:
+        raise ValueError("campaign below protocol minimum: need >=2 pairs to "
+                         "place 2 interior decoys (and >=3 valid pairs to analyze)")
+    orders = ["cf"] * ((n_pairs + 1) // 2) + ["of"] * (n_pairs // 2)
+    rng.shuffle(orders)
     seq = []
-    for k in range(n_pairs):
-        seq.extend(("closed", "open") if k % 2 == 0 else ("open", "closed"))
-        if k in (0, n_pairs - 1):          # decoys interleaved, not clustered
-            seq.append("decoy")
+    for o in orders:
+        seq.extend(("closed", "open") if o == "cf" else ("open", "closed"))
+    positions = sorted(rng.sample(range(1, len(seq)), 2))
+    for i, p in enumerate(positions):
+        seq.insert(p + i, "decoy")
     return seq
 
 
@@ -71,7 +90,7 @@ def _build(session, n_pairs, seed, amp_for):
     """amp_for(state) -> (mean_I, mean_Q) injected into that run."""
     rng = random.Random(seed)
     runs = []
-    for serial, state in enumerate(_schedule(n_pairs)):
+    for serial, state in enumerate(draw_schedule(n_pairs, rng)):
         mi, mq = amp_for(state)
         r = _run(serial, rng, mean_I=mi, mean_Q=mq)
         r["_true_state"] = state
@@ -89,12 +108,19 @@ def make_runs_signal(session, i_signal_A=2e-9, n_pairs=4, seed=2):
                   lambda s: (i_signal_A, 0.0) if s == "closed" else (0.0, 0.0))
 
 
-def make_runs_piezo_heat(session, i_artifact_A=2e-9, n_pairs=4, seed=5):
+def make_runs_piezo_heat(session, i_artifact_A=2e-9, n_pairs=4, seed=5,
+                         coupling=1.0):
     """PT-515 blocker-3: actuation-correlated artifact — follows the DRIVE,
-    so it appears in closed AND decoy runs identically (in-phase, in-band,
-    QC-clean: the heat source is the actuator, not the junction thermistor)."""
-    return _build(session, n_pairs, seed,
-                  lambda s: (i_artifact_A, 0.0) if s in ("closed", "decoy") else (0.0, 0.0))
+    appearing in closed runs at full strength and in decoy runs at
+    `coupling` x strength (re-PT-515 quantified the old decoy test's blind
+    spot below ~12% coupling; the statistical decoy test must catch far less)."""
+    def amp(s):
+        if s == "closed":
+            return (i_artifact_A, 0.0)
+        if s == "decoy":
+            return (coupling * i_artifact_A, 0.0)
+        return (0.0, 0.0)
+    return _build(session, n_pairs, seed, amp)
 
 
 def make_runs_thermal_artifact(session, n_pairs=4, seed=3):

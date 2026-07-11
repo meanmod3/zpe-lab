@@ -29,6 +29,7 @@ Stage B (after per-run stats are committed): join the operator-held label file
 Run `python pipeline.py --demo` for a synthetic end-to-end demonstration.
 """
 
+import hashlib
 import json
 import math
 import os
@@ -57,8 +58,35 @@ MIN_DECOY_RUNS = 2                   # PT-515: interleaved actuation controls
 CHARGE_GATE_C = cfg.STORED_CHARGE_EXCLUSION_C   # 10 mC, row 5
 PHASE_TOLERANCE_DEG = 30.0           # vs measured mechanical phase reference
 UNDIMINISHED_FRACTION = 0.5          # row-5 "signal undiminished" (511)
+R_J_CROSSCHECK_TOL = 0.2             # session r_j must match every run's I-V check
+DECOY_ABS_FLOOR_A = QC_BOUNDS["decoupled_null_A_max"]  # 10 pA statistical floor
 
 RUN_ID_ALLOWED = "run-"              # opaque serial prefix; digits only after
+
+# session fields sealed BEFORE the blind draw (re-PT-515 blocker 1):
+SEALED_FIELDS = ("r_j_ohm", "f_mod_Hz", "q1_dummy_null_A", "mech_phase_deg")
+
+
+def seal_session(session: dict) -> dict:
+    """Seal the measured rig/device constants BEFORE the operator's blind draw.
+    The seal hash is committed to the repo pre-campaign; verify_session refuses
+    any record whose fields no longer match it. This gives `session` the same
+    structural enforcement run ids got (re-PT-515: unauthenticated session
+    values flipped verdicts)."""
+    canonical = json.dumps({k: session[k] for k in SEALED_FIELDS}, sort_keys=True)
+    return {**session, "seal_sha256": hashlib.sha256(canonical.encode()).hexdigest()}
+
+
+def verify_session(sealed: dict) -> dict:
+    canonical = json.dumps({k: sealed[k] for k in SEALED_FIELDS}, sort_keys=True)
+    if hashlib.sha256(canonical.encode()).hexdigest() != sealed.get("seal_sha256"):
+        raise ValueError("session seal mismatch — sealed rig constants were "
+                         "modified after the pre-draw commitment; refuse")
+    # >= not >: a rig measuring EXACTLY the bound failed Q1.3 (strict <)
+    if sealed["q1_dummy_null_A"] >= QC_BOUNDS["decoupled_null_A_max"]:
+        raise ValueError("session Q1.3 dummy null at/over its qualification "
+                         "bound — rig is not qualified; refuse")
+    return sealed
 
 
 # --- Stage A: label-free ------------------------------------------------------
@@ -106,7 +134,8 @@ def run_stats(run: dict) -> dict:
         "n_segments": len(I),
         "charge_C": run["artifacts"]["charge_C"],
         "measured": {k: run["artifacts"][k] for k in
-                     ("dT_K", "decoupled_null_A", "gnd_shift_V", "rf_v_V")},
+                     ("dT_K", "decoupled_null_A", "gnd_shift_V", "rf_v_V",
+                      "r_j_check_ohm")},
         "qc_violations": qc_run(run),
     }
 
@@ -123,12 +152,18 @@ def artifact_floor_A(valid_stats: list, session: dict, i_signal_A: float) -> dic
     row 2 uses the larger of the per-run decoupled nulls and the Q1.3 dummy
     null (a measured current, cross-checked against its qualification bound);
     row 6 is the calibration drift fraction of the quantity under test.
-    `session` supplies only measured device/rig constants: r_j (device I-V),
-    q1_dummy_null_A (Q1.3 record), mech_phase_deg (Q1 reference)."""
-    if session["q1_dummy_null_A"] > QC_BOUNDS["decoupled_null_A_max"]:
-        raise ValueError("session Q1.3 dummy null exceeds its qualification "
-                         "bound — rig is not qualified; refuse to compute a floor")
+    `session` supplies only SEALED measured constants (verify_session enforced),
+    and r_j is additionally cross-checked against every run's own I-V check
+    channel (re-PT-515 blocker 1: an inflated r_j collapsed the floor)."""
+    session = verify_session(session)
     r_j = session["r_j_ohm"]
+    for s in valid_stats:
+        run_rj = s["measured"]["r_j_check_ohm"]
+        if abs(run_rj - r_j) / r_j > R_J_CROSSCHECK_TOL:
+            raise ValueError(
+                f"session r_j {r_j:.3g} ohm inconsistent with run "
+                f"{s['run_id']} I-V check {run_rj:.3g} ohm (> "
+                f"{R_J_CROSSCHECK_TOL:.0%}) — refuse to compute a floor")
     dT = max(s["measured"]["dT_K"] for s in valid_stats)
     v_rf = max(s["measured"]["rf_v_V"] for s in valid_stats)
     v_gnd = max(s["measured"]["gnd_shift_V"] for s in valid_stats)
@@ -158,7 +193,12 @@ def _phase_test(closed: list, session: dict, floor_rss: float) -> dict:
     return {"ok": ok, "n_qualified": len(qualified), "max_offset_deg": max(off)}
 
 
-def stage_b(per_run_stats: list, labels: dict, session: dict) -> dict:
+def stage_b(per_run_stats: list, labels: dict, session: dict,
+            attestations: dict) -> dict:
+    """`attestations` arrives WITH the label file at unblinding (operator-held,
+    e.g. {"power_audit_accounted": bool}) — it is an operator attestation, not
+    a measurement, and is reported as such (re-PT-515: it was previously a bare
+    trusted boolean inside session)."""
     valid = [s for s in per_run_stats if not s["qc_violations"]]
     excluded = [s for s in per_run_stats if s["qc_violations"]]
     closed = [s for s in valid if labels[s["run_id"]] == "closed"]
@@ -186,7 +226,14 @@ def stage_b(per_run_stats: list, labels: dict, session: dict) -> dict:
 
     mean_open = statistics.fmean([o["mean_I_A"] for o in open_])
     decoy_diff = statistics.fmean([d["mean_I_A"] for d in decoy]) - mean_open
-    decoy_test = abs(decoy_diff) < floor["rss"]          # 1x floor, pre-registered
+    # re-PT-515 blocker 3: statistical decoy test. SE of the decoy-open mean
+    # difference from per-run SEMs; threshold = max(3 x SE, the 10 pA Q1.3
+    # bound). Catches drive-path artifacts down to ~1% coupling at nA scale
+    # (the old 1 x RSS-floor threshold was blind below ~12% coupling).
+    se_diff = math.sqrt(sum(d["sem_I_A"] ** 2 for d in decoy) / len(decoy) ** 2 +
+                        sum(o["sem_I_A"] ** 2 for o in open_) / len(open_) ** 2)
+    decoy_threshold = max(3.0 * se_diff, DECOY_ABS_FLOOR_A)
+    decoy_test = abs(decoy_diff) < decoy_threshold
 
     ph = _phase_test(closed, session, floor["rss"])
 
@@ -194,12 +241,14 @@ def stage_b(per_run_stats: list, labels: dict, session: dict) -> dict:
     undiminished = (last >= UNDIMINISHED_FRACTION * first) if first > floor["rss"] else True
     total_charge = sum(s["charge_C"] for s in valid)
     charge_gate = total_charge >= CHARGE_GATE_C and undiminished
-    audit_gate = session["power_audit_accounted"]
+    audit_gate = bool(attestations.get("power_audit_accounted", False))
 
     result.update({
         "mean_diff_A": mean_diff, "floor": floor, "threshold_A": threshold,
         "signal_test": signal_test, "phase": ph, "phase_test": ph["ok"],
-        "decoy_diff_A": decoy_diff, "decoy_test": decoy_test,
+        "decoy_diff_A": decoy_diff, "decoy_threshold_A": decoy_threshold,
+        "decoy_test": decoy_test,
+        "audit_is_attestation": True,
         "total_charge_C": total_charge, "signal_undiminished": undiminished,
         "charge_gate": charge_gate, "audit_gate": audit_gate,
         "l3_caveat": ("Power-audit floor (~1 uW) cannot bound pW-scale inputs; "
@@ -230,12 +279,11 @@ def stage_b(per_run_stats: list, labels: dict, session: dict) -> dict:
 # --- demo ----------------------------------------------------------------------
 
 def _demo():
-    from synth import make_session, make_runs_null, make_labels
+    from synth import make_session, make_runs_null, make_labels, make_attestations
     session = make_session()
     runs = make_runs_null(session, n_pairs=4, seed=11)
     stats = stage_a(runs)
-    labels = make_labels(runs)
-    verdict = stage_b(stats, labels, session)
+    verdict = stage_b(stats, make_labels(runs), session, make_attestations())
     print(json.dumps(verdict, indent=2, default=str)[:1500])
     print("--- demo verdict:", verdict["verdict"])
 
