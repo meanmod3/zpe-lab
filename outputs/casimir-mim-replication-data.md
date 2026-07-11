@@ -26,6 +26,23 @@
 
 ---
 
+
+> **⚠️ MEANMODE PT-518 CORRECTIONS APPLIED — 2026-07-11 (adversarial pressure-test, second verification layer)**
+>
+> 1. **(MAJOR) Patent data attribution corrected:** targeted full-text fetches found US11133758B2 and
+>    US11563388B2 contain ONLY schematic/prophetic figures ("provided for illustration purposes only")
+>    — measured I-V/VASE/Fowler-Nordheim data exists ONLY in US12166434B2 ("FIG. 14A provides data
+>    showing measured electrical current as a function of voltage"). Section 6 table corrected below.
+> 2. (MINOR) The "~3-order-of-magnitude amplitude gap" in Section 4 is THIS BRIEF's derived comparison;
+>    Ford's own words are "unclear whether either of these are large enough to explain the results."
+> 3. (MINOR) The absence claim is scoped to the searched English-language sources (see Limitations).
+> 4. (NOTE) PT's independent counter-search found no contradicting hit and adds a third
+>    adjacent-but-not-a-replication case: the Archimedes experiment (SarGrav, Sardinia) — Casimir
+>    vacuum-energy modulation vs gravitational/weight signature; plus third-party corroboration that
+>    no independent lab has replicated (singularity.kiwi 2026-05; The Debrief on MicroSPARC).
+
+---
+
 ## Executive Summary
 
 **No independent experimental replication — positive, null, or artifact-attributed — of the Moddel-group Casimir-cavity MIM device results has been published in any peer-reviewed journal, conference proceeding, preprint server, or thesis as of July 2026.** No publicly available raw datasets exist. No experimental critique with measurements has been published. An extensive multi-database search found no evidence of independent experimental engagement with these claims, which strongly supports the case for building hardware for an independent replication.
@@ -192,17 +209,17 @@ None of this is available in numerical/tabular form in any public repository. Di
 
 | Patent | Issued | Title | Experimental Data? |
 |---|---|---|---|
-| **US11133758B2** [14] | 2021-09-28 | Quantum Vacuum Fluctuation Devices | **YES** — I(V) curves, ISC vs. cavity thickness |
+| **US11133758B2** [14] | 2021-09-28 | Quantum Vacuum Fluctuation Devices | ~~YES~~ **NO (PT-518): schematic/prophetic figures only, disclaimed "for illustration purposes only"** |
 | US11258379B2 | 2022-02-22 | Quantum Noise Power Devices | No — conceptual |
 | US11251723B2 | 2022-02-15 | Systems for Driving Generation of Products Using QVF | No — conceptual |
 | US11463026B2 | 2022-10-04 | Quantum Plasmon Fluctuation Devices | No — conceptual |
-| **US11563388B2** | 2023-01-24 | QVF Devices (continuation) | **YES** — same data as parent US11133758 [14] |
+| **US11563388B2** | 2023-01-24 | QVF Devices (continuation) | ~~YES~~ **NO (PT-518): same prophetic-only figure set as parent** |
 | US11837971B2 | 2023-12-05 | Systems for Driving Products Using QVF (continuation) | No — conceptual |
 | **US12166434B2** [15] | 2024-12-10 | Enhanced Quantum Vacuum Energy Devices | **YES** — I(V) curves, ISC vs. thickness, Fowler-Nordheim analysis, VASE measurements, 1.4 pW max power |
 
 **Key experimental data in patents:**
-- I(V) curves showing second-quadrant power output at cavity thicknesses 33–1100 nm [14,15]
-- Short-circuit current vs. cavity thickness for PMMA and SiO₂ dielectric fills [14,15]
+- I(V) curves showing second-quadrant power output at cavity thicknesses 33–1100 nm [15 ONLY — PT-518]
+- Short-circuit current vs. cavity thickness for PMMA and SiO₂ dielectric fills [15 ONLY — PT-518]
 - Maximum measured power: 1.4 pW from 0.02 µm² device (= 70 W/m²) [15] *[VERIFIER: The ">1,000 devices, 21 fabrication batches" figure cited in earlier drafts is sourced from JSE 2022 [3] and the continuation patent US12166434B2 [15], not the base patent US11133758B2 [14] — citation corrected.]*
 - >1,000 devices, 21 fabrication batches [3,15]
 - VASE-measured refractive indices and insulator thicknesses [15]
