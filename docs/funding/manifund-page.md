@@ -3,10 +3,9 @@
 > **LIVE: https://manifund.org/projects/first-independent-test-of-the-casimir-cavity-vacuum-energy-claim**
 > Posted from the operator's logged-in session (operator created the account/login; content
 > filled and published per operator instruction). Settings as posted: min $2,000 / goal
-> $18,500 / decision deadline 2026-08-21 / cause: Science & technology. ⚠️ REMAINING OPERATOR
-> STEP: Manifund's funding requirements are (1) SIGN GRANT AGREEMENT (legal — operator-only,
-> link on the project page), (2) reach min funding, (3) Manifund approval. Unsigned agreement
-> blocks payout even if funded.
+> $18,500 / decision deadline 2026-08-21 / cause: Science & technology. Grant agreement SIGNED by the operator
+> 2026-07-11. Remaining funding requirements are external: (2) reach the $2,000 minimum by
+> 2026-08-21, (3) Manifund approval.
 
 > Structure follows Manifund's project-creation prompts. Suggested settings:
 > **Minimum funding: $2,000** (fab-run partial) · **Funding goal: $18,500** ·
