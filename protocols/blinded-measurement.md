@@ -5,6 +5,16 @@ reconciliation. The analysis pipeline (`analysis/pipeline.py`) is FROZEN before 
 data exists; this protocol defines how data reaches it without the analyst being able
 to tune on labels.
 
+## Admission gate (added by intent 570 — Phase-A qualification)
+
+**No device enters this blinded test until it has passed Phase-A fabrication qualification**
+(`phase-a-fabrication-qualification.md`): its measured differential resistance, low-bias I-V
+linearity, Fowler-Nordheim barrier heights, and layer thicknesses match the published MUNDANE
+baselines, recorded with values. This closes the "tune the fabrication until the anomalous
+signal appears, then test" pathway: admission depends only on ordinary, cavity-independent
+device properties, never on the contested zero-bias current. A device that never qualifies is
+a fabrication outcome, logged as such, and is not measured here.
+
 ## Run structure
 - One RUN = one contiguous logging session at one state, fixed f_mod, fixed device.
   THREE states (rev 2, PT-515): **CLOSED** (mirror engaged at design gap), **OPEN**
