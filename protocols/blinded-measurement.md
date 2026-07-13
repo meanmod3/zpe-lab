@@ -5,15 +5,25 @@ reconciliation. The analysis pipeline (`analysis/pipeline.py`) is FROZEN before 
 data exists; this protocol defines how data reaches it without the analyst being able
 to tune on labels.
 
-## Admission gate (added by intent 570 — Phase-A qualification)
+## Admission gate (added by intent 570; enforced per PT-570)
 
-**No device enters this blinded test until it has passed Phase-A fabrication qualification**
-(`phase-a-fabrication-qualification.md`): its measured differential resistance, low-bias I-V
-linearity, Fowler-Nordheim barrier heights, and layer thicknesses match the published MUNDANE
-baselines, recorded with values. This closes the "tune the fabrication until the anomalous
-signal appears, then test" pathway: admission depends only on ordinary, cavity-independent
-device properties, never on the contested zero-bias current. A device that never qualifies is
-a fabrication outcome, logged as such, and is not measured here.
+**No device enters this blinded test until it has a SEALED Phase-A qualification record**
+(`phase-a-fabrication-qualification.md`): a hashed record of its measured differential
+resistance, low-bias I-V linearity, Fowler-Nordheim barrier heights, and layer thicknesses
+against the published MUNDANE baselines — committed BEFORE any cavity/mirror measurement exists
+for that device. Enforcement (not advisory): a device whose Phase-A record is missing, unsealed,
+or post-dated relative to its first cavity measurement is refused.
+
+Admission depends only on ordinary device properties, never on the contested cavity-open/closed
+differential. Honest scope (PT-570): these properties are NOT independent of the effect's
+expected *magnitude* (they share tunnel-barrier physics — see the Phase-A protocol's
+independence section), but they cannot tune the within-device open/closed contrast that IS the
+test, and the tuning feedback loop is broken by locked targets. Residual population-level
+coupling is made auditable: the FULL Phase-A distribution (pass and fail, with values and
+qualification rate) is committed publicly, and Phase-B admission order among a passing cohort is
+pre-registered as fabrication-date-sequential (or seeded-random), never
+resistance/thickness-optimized. A device that never qualifies is a fabrication outcome, logged
+in the public distribution, not measured here.
 
 ## Run structure
 - One RUN = one contiguous logging session at one state, fixed f_mod, fixed device.

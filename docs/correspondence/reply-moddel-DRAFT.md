@@ -34,13 +34,26 @@ that strength:
    — not against the anomalous current.** I iterate the recipe freely until my junctions match
    what you report for ordinary device behavior: the differential-resistance range, the linear
    low-bias I(V), the Fowler-Nordheim barrier heights, and the layer thicknesses (verified by
-   ellipsometry/AFM). These are mundane properties, measurable without any cavity, so
-   developing against them can't bias the later test. This is the "develop a working protocol
-   first" step you're describing.
+   ellipsometry/AFM). This is the "develop a working protocol first" step you're describing.
 
-2. **Only devices that pass that qualification enter the blinded cavity-open/closed test** —
-   the pre-registered part, where the analysis is frozen and the cavity state is withheld from
-   the analyst until after the per-device statistics are recorded.
+   I want to be precise about one thing rather than overclaim it, because you'd rightly catch
+   it otherwise: these qualification criteria are *not* fully independent of the effect's
+   expected size. Your Fig. 4(b)/5(b) show the current scaling exponentially with insulator
+   thickness, which is the same parameter that sets the junction resistance I'm qualifying on —
+   so hitting your resistance band tends to select the thin-barrier, higher-signal end of your
+   own curves. I'm not claiming otherwise. What the qualification *does* protect against is the
+   specific failure mode of tuning fabrication while watching the anomalous output and adjusting
+   toward more of it — because the target values are locked to your published baselines before
+   fabrication starts and never moved toward "more signal," and because the test itself is a
+   within-device cavity-open vs cavity-closed contrast (retractable mirror, same junction), which
+   device selection can't tune. To keep the residual coupling honest rather than hidden, I commit
+   the full qualification distribution publicly — every device, pass and fail, with its measured
+   resistance and thickness — so anyone (including you) can check whether I'm quietly cherry-picking
+   the low-resistance devices.
+
+2. **Only devices with a sealed, pre-cavity qualification record enter the blinded
+   cavity-open/closed test** — the pre-registered part, where the analysis is frozen and the
+   cavity state is withheld from the analyst until after the per-device statistics are recorded.
 
 The one thing this needs from you to be fair to your work: **the specific deposition
 conditions you consider necessary** — rates, pressures, substrate temperatures, timings,
