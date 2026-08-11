@@ -44,3 +44,7 @@ now concrete at AggieFab) threatens the fab-run budget across the whole shortlis
 decision for the operator: accept corporate rates and size the funding asks accordingly, OR
 pursue a legitimate academic-affiliation / fiscal-sponsorship route. Interacts with the
 funding effort (EV / Manifund / Experiment.com $2,400 fab-run goal may need revising upward).
+
+
+## WIND-DOWN (2026-07-13)
+Project not proceeding to a physical experiment (AI-assisted design exercise; not carried into real fabrication). Honest wind-down notes to Malhotra, Moddel, and Emergent Ventures are in `winddown-emails.md` (operator sends). The earlier continue-path reply drafts are marked SUPERSEDED. Manifund page being hidden; Experiment.com never launched; no funds raised anywhere.

@@ -1,5 +1,23 @@
 # zpe-lab — the first independent test of the Casimir-cavity MIM "vacuum energy" claim
 
+> ## ⚠️ ARCHIVED — not an active or funded research program (2026-07-13)
+>
+> **This is a design-and-methodology exploration produced largely with AI tooling. It was
+> never built, no measurement was ever taken, and no result exists in either direction.** After
+> the design work, the operator decided not to carry it into a real physical experiment,
+> because doing so competently is not something an AI-assisted paper exercise can honestly
+> stand behind.
+>
+> **All fundraising has been withdrawn.** Any funding page, grant application, or donation
+> request associated with this repository is closed and no longer valid — please do not fund it.
+> No money was ever raised.
+>
+> The repository is kept public purely as an open, honest record of the design work and its
+> adversarial-review history — useful, if at all, as a reference. Nothing here is a claim about
+> physics or a solicitation of any kind.
+
+---
+
 **A pre-registered, blinded, adversarially-reviewed replication study.** In 2021, an
 NSF-funded group published in *Physical Review Research* that metal-insulator-metal tunnel
 junctions faced with sub-micron "Casimir cavities" produce zero-bias currents drawn from

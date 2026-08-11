@@ -1,3 +1,5 @@
+> **SUPERSEDED / NOT SENT (2026-07-13) — project wound down. The sent correspondence is the wind-down note in `docs/correspondence/winddown-emails.md`. This continue-path draft is retained only as record.**
+
 # DRAFT reply to Prof. Garret Moddel — for operator review, NOT sent
 
 > This is the load-bearing reply. It must hold the pre-registration line without being

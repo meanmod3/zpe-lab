@@ -1,3 +1,5 @@
+> **WITHDRAWN 2026-07-13 — fundraising closed; project archived, not an active pursuit. No funds were raised. This document is retained only as an honest record. Do not fund.**
+
 # Formal funding request — core proposal (program-agnostic master)
 
 > DRAFT for operator review. This is the master text; per-program variants (length/format)

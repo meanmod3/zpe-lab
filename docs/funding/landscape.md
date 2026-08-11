@@ -1,3 +1,5 @@
+> **WITHDRAWN 2026-07-13 — fundraising closed; project archived, not an active pursuit. No funds were raised. This document is retained only as an honest record. Do not fund.**
+
 # Funding Route Dossier — Independent Casimir-Cavity (Moddel PRR L022007) Replication
 
 Research-only pass (2026-07-11), no contact/accounts/submissions made. Verify live before

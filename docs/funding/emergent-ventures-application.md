@@ -1,3 +1,5 @@
+> **WITHDRAWN 2026-07-13 — fundraising closed; project archived, not an active pursuit. No funds were raised. This document is retained only as an honest record. Do not fund.**
+
 # Emergent Ventures application — SUBMITTED 2026-07-11
 
 > **STATUS: SUBMITTED** by the operator (form filled collaboratively in-browser; operator

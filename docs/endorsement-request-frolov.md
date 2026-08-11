@@ -1,3 +1,5 @@
+> **SUPERSEDED / NOT SENT (2026-07-13) — project wound down. The sent correspondence is the wind-down note in `docs/correspondence/winddown-emails.md`. This continue-path draft is retained only as record.**
+
 # DRAFT — endorsement / advisory-review request to Prof. Sergey Frolov
 
 > DRAFT for operator review. Sending is the operator's act. Frolov is a University of

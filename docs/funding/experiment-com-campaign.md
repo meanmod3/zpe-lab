@@ -1,3 +1,5 @@
+> **WITHDRAWN 2026-07-13 — fundraising closed; project archived, not an active pursuit. No funds were raised. This document is retained only as an honest record. Do not fund.**
+
 # Experiment.com campaign — Stage 1: the fabrication run
 
 > **STATUS 2026-07-11: DRAFTED + staged, BLOCKED on operator email verification.** Attempted to
